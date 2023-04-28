@@ -24,3 +24,7 @@ go.work
 # idea
 .idea
 
+bin
+pkg
+tmp
+
