@@ -8,6 +8,7 @@ MNT_PATH="buddy"
 DIR="$(cd "$(dirname "$(readlink "$0")")" && pwd)"
 PLUGINS="$DIR/tmp/plugins"
 echo "PLUGINS: $PLUGINS"
+
 mkdir -p "$PLUGINS"
 
 function vault_server_up {
