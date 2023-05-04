@@ -28,7 +28,7 @@ function vault_server_up {
 
 function build_cmd {
   echo "[Building]"
-  GOOS=linux go build -o "$PLUGINS/$PLUGIN_NAME" "./cmd/$PLUGIN_NAME"
+  go build -o "$PLUGINS/$PLUGIN_NAME" "./cmd/$PLUGIN_NAME"
   SHASUM=$(shasum -a 256 "$PLUGINS/$PLUGIN_NAME" | cut -d " " -f1)
 }
 
