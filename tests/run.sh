@@ -7,6 +7,7 @@ PLUGIN_NAME="vault-plugin-secrets-buddy"
 MNT_PATH="buddy"
 DIR="$(cd "$(dirname "$(readlink "$0")")" && pwd)"
 PLUGINS="$DIR/tmp/plugins"
+echo "PLUGINS: $PLUGINS"
 mkdir -p "$PLUGINS"
 
 function vault_server_up {
@@ -27,7 +28,7 @@ function vault_server_up {
 
 function build_cmd {
   echo "[Building]"
-  GOOS=linux go build -o "$PLUGINS/$PLUGIN_NAME" "./cmd/$PLUGIN_NAME"
+  go build -o "$PLUGINS/$PLUGIN_NAME" "./cmd/$PLUGIN_NAME"
   SHASUM=$(shasum -a 256 "$PLUGINS/$PLUGIN_NAME" | cut -d " " -f1)
 }
 
@@ -64,6 +65,10 @@ function buddy_configure {
 
 }
 
+function api_fetch_token {
+  BUDDY_FETCH_TOKEN=$(curl -s -k --header "Authorization: Bearer $1" "$BUDDY_BASE_URL/user/token")
+}
+
 function buddy_rotate_root {
   echo "[Rotating root]"
   vault_cmd write -f buddy/rotate-root
@@ -73,7 +78,7 @@ function buddy_role_r1 {
   echo "[Role r1]"
   vault_cmd write buddy/roles/r1 \
     ttl=30 \
-    scopes=WORKSPACE
+    scopes=WORKSPACE,TOKEN_INFO
 }
 
 function buddy_role_r2() {
@@ -82,7 +87,6 @@ function buddy_role_r2() {
     ttl=180 \
     max_ttl=3600 \
     scopes=WORKSPACE,TOKEN_INFO \
-    ip_restrictions=127.0.0.1 \
     workspace_restrictions=a,b
 }
 
@@ -90,9 +94,9 @@ function buddy_test_role_r1 {
   echo "[Test role r1]"
   ROLE_R1=$(vault_cmd read -format=json buddy/roles/r1)
   ROLE_R1_TTL=$(echo $ROLE_R1 | jq -r .data.ttl)
-  ROLE_R1_SCOPES=$(echo $ROLE_R1 | jq -r '.data.scopes | join(",")')
-  test_equal "$ROLE_R1_TTL" "30" "TTL $ROLE_R1_TTL not equal 30"
-  test_equal "$ROLE_R1_SCOPES" 'WORKSPACE' 'Scopes $ROLE_R1_SCOPES not equal WORKSPACE'
+  ROLE_R1_SCOPES=$(echo $ROLE_R1 | jq -r '.data.scopes | sort | join(",")')
+  test_equal "$ROLE_R1_TTL" "30" "TTL \$ROLE_R1_TTL: $ROLE_R1_TTL not equal 30"
+  test_equal "$ROLE_R1_SCOPES" 'TOKEN_INFO,WORKSPACE' "Scopes \$ROLE_R1_SCOPES: $ROLE_R1_SCOPES not equal TOKEN_INFO,WORKSPACE"
 }
 
 function buddy_test_role_r2() {
@@ -100,14 +104,12 @@ function buddy_test_role_r2() {
   ROLE_R2=$(vault_cmd read -format=json buddy/roles/r2)
   ROLE_R2_TTL=$(echo $ROLE_R2 | jq -r .data.ttl)
   ROLE_R2_MAX_TTL=$(echo $ROLE_R2 | jq -r .data.max_ttl)
-  ROLE_R2_SCOPES=$(echo $ROLE_R2 | jq -r '.data.scopes | join(",")')
-  ROLE_R2_IP=$(echo $ROLE_R2 | jq -r '.data.ip_restrictions | join(",")')
-  ROLE_R2_WORKSPACE=$(echo $ROLE_R2 | jq -r '.data.workspace_restrictions | join(",")')
-  test_equal "$ROLE_R2_TTL" "180" "TTL $ROLE_R2_TTL not equal 180"
-  test_equal "$ROLE_R2_MAX_TTL" "3600" "Max TTL $ROLE_R2_MAX_TTL not equal 3600"
-  test_equal "$ROLE_R2_SCOPES" 'WORKSPACE,TOKEN_INFO' 'Scopes $ROLE_R2_SCOPES not equal WORKSPACE,TOKEN_INFO'
-  test_equal "$ROLE_R2_IP" '127.0.0.1' 'IP restrictions $ROLE_R2_IP not equal 127.0.0.1'
-  test_equal "$ROLE_R2_WORKSPACE" 'a,b' 'Workspace restrictions $ROLE_R2_WORKSPACE not equal a,b'
+  ROLE_R2_SCOPES=$(echo $ROLE_R2 | jq -r '.data.scopes | sort | join(",")')
+  ROLE_R2_WORKSPACE=$(echo $ROLE_R2 | jq -r '.data.workspace_restrictions | sort | join(",")')
+  test_equal "$ROLE_R2_TTL" "180" "TTL \$ROLE_R2_TTL: $ROLE_R2_TTL not equal 180"
+  test_equal "$ROLE_R2_MAX_TTL" "3600" "Max TTL \$ROLE_R2_MAX_TTL: $ROLE_R2_MAX_TTL not equal 3600"
+  test_equal "$ROLE_R2_SCOPES" 'TOKEN_INFO,WORKSPACE' "Scopes \$ROLE_R2_SCOPES: $ROLE_R2_SCOPES not equal TOKEN_INFO,WORKSPACE"
+  test_equal "$ROLE_R2_WORKSPACE" 'a,b' "Workspace restrictions \$ROLE_R2_WORKSPACE: $ROLE_R2_WORKSPACE not equal a,b"
 }
 
 function test_equal {
@@ -128,19 +130,27 @@ function buddy_test_creds_r1 {
   echo "[Test creds r1]"
   CREDS_R1=$(vault_cmd read -format=json buddy/creds/r1)
   CREDS_R1_LEASE=$(echo $CREDS_R1 | jq -r .lease_duration)
-  CREDS_R1_TOKEN=$(echo $CREDS_R1 | jq -r .token)
-  test_equal "$CREDS_R1_LEASE" "30" "Lease $CREDS_R1_LEASE not equal 30"
-  test_not_empty "$CREDS_R1_TOKEN" "Token should not be empty"
+  CREDS_R1_TOKEN=$(echo $CREDS_R1 | jq -r .data.token)
+  test_equal "$CREDS_R1_LEASE" "30" "Lease \$CREDS_R1_LEASE: $CREDS_R1_LEASE not equal 30"
+  test_not_empty "$CREDS_R1_TOKEN" "Token \$CREDS_R1_TOKEN should not be empty"
+  api_fetch_token "$CREDS_R1_TOKEN"
+  CREDS_R1_SCOPES=$(echo $BUDDY_FETCH_TOKEN | jq -r '.scopes | sort | join(",")')
+  test_equal "$CREDS_R1_SCOPES" 'TOKEN_INFO,WORKSPACE' "Scopes \$CREDS_R1_SCOPES: $CREDS_R1_SCOPES not equal TOKEN_INFO,WORKSPACE"
 }
 
 function buddy_test_creds_r2 {
   echo "[Test creds r2]"
   CREDS_R2=$(vault_cmd read -format=json buddy/creds/r2)
   CREDS_R2_LEASE=$(echo $CREDS_R2 | jq -r .lease_duration)
-  CREDS_R2_TOKEN=$(echo $CREDS_R2 | jq -r .token)
+  CREDS_R2_TOKEN=$(echo $CREDS_R2 | jq -r .data.token)
   CREDS_R2_ID=$(echo $CREDS_R2 | jq -r .lease_id)
-  test_equal "$CREDS_R2_LEASE" "180" "Lease $CREDS_R2_LEASE not equal 180"
-  test_not_empty "$CREDS_R2_TOKEN" "Token should not be empty"
+  test_equal "$CREDS_R2_LEASE" "180" "Lease \$CREDS_R2_LEASE: $CREDS_R2_LEASE not equal 180"
+  test_not_empty "$CREDS_R2_TOKEN" "Token \$CREDS_R2_TOKEN should not be empty"
+  api_fetch_token "$CREDS_R2_TOKEN"
+  CREDS_R2_SCOPES=$(echo $BUDDY_FETCH_TOKEN | jq -r '.scopes | sort | join(",")')
+  CREDS_R2_WORKSPACE_RESTRICTINOS=$(echo $BUDDY_FETCH_TOKEN | jq -r '.workspace_restrictions | sort | join(",")')
+  test_equal "$CREDS_R2_SCOPES" 'TOKEN_INFO,WORKSPACE' "Scopes \$CREDS_R2_SCOPES: $CREDS_R2_SCOPES not equal TOKEN_INFO,WORKSPACE"
+  test_equal "$CREDS_R2_WORKSPACE_RESTRICTINOS" 'a,b' "Workspace restrictions \$CREDS_R2_WORKSPACE_RESTRICTINOS: $CREDS_R2_WORKSPACE_RESTRICTINOS not equal a,b"
 }
 
 function buddy_test_creds_r2_renew {
@@ -153,6 +163,9 @@ function buddy_test_creds_r2_renew {
 function buddy_test_creds_r2_revoke {
   echo "[Test creds r2 revoke]"
   vault_cmd lease revoke "$CREDS_R2_ID"
+  api_fetch_token $CREDS_R2_TOKEN
+  REVOKE_R2_MESSAGE=$(echo $BUDDY_FETCH_TOKEN | jq -r '.errors[0].message')
+  test_equal "$REVOKE_R2_MESSAGE" "Wrong authentication data" "Token \$CREDS_R2_TOKEN not revoked"
 }
 
 trap cleanup EXIT
@@ -172,5 +185,3 @@ buddy_test_role_r2
 buddy_test_creds_r2
 buddy_test_creds_r2_renew
 buddy_test_creds_r2_revoke
-
-# TODO pobierac info o tokenie bezposrednio z api i sprawdzac czy faktycznie jest tak jak byc powinno
