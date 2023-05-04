@@ -35,5 +35,9 @@ signs:
       - "${signature}"
       - "--detach-sign"
       - "${artifact}"
+release:
+  github:
+    owner: buddy
+    name: vault-plugin-secrets-buddy
 changelog:
   skip: true
