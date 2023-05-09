@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
+	"sort"
 	"time"
 )
 
@@ -70,6 +71,9 @@ func pathRole(b *buddySecretBackend) *framework.Path {
 }
 
 func saveRole(ctx context.Context, s logical.Storage, c *roleEntry, name string) error {
+	sort.Strings(c.Scopes)
+	sort.Strings(c.IpRestrictions)
+	sort.Strings(c.WorkspaceRestrictions)
 	entry, err := logical.StorageEntryJSON(fmt.Sprintf("%s/%s", rolesStoragePath, name), c)
 	if err != nil {
 		return err

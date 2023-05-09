@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -37,7 +38,8 @@ func backend() *buddySecretBackend {
 		Secrets: []*framework.Secret{
 			secretToken(&b),
 		},
-		Invalidate: b.invalidate,
+		Invalidate:   b.invalidate,
+		PeriodicFunc: b.periodic,
 	}
 	return &b
 }
@@ -88,6 +90,37 @@ func (b *buddySecretBackend) reset() {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 	b.client = nil
+}
+
+func (b *buddySecretBackend) periodic(ctx context.Context, sys *logical.Request) error {
+	b.Logger().Info("starting periodic function")
+	config, err := b.getConfig(ctx, sys.Storage)
+	if err != nil {
+		return err
+	}
+	if config == nil {
+		return nil
+	}
+	if !config.TokenAutoRotate {
+		b.Logger().Info("no need to rotate root token")
+	}
+	now := time.Now()
+	if !config.TokenNoExpiration && config.TokenExpiresAt.Unix() < now.Unix() {
+		b.Logger().Info("root token expired - disabling auto rotate")
+		config.TokenAutoRotate = false
+		return b.saveConfig(ctx, config, sys.Storage)
+	}
+	forceRotate := os.Getenv("BUDDY_FORCE_RORATE") == "true"
+	if forceRotate || config.TokenAutoRotateAt.Unix() < now.Unix() {
+		b.Logger().Info("rotating root token")
+		err := b.rotateRootToken(ctx, sys)
+		if err != nil {
+			b.Logger().Info("error while rotating token - will try in an hour", err.Error())
+			config.TokenAutoRotateAt = config.TokenAutoRotateAt.Add(time.Hour)
+			return b.saveConfig(ctx, config, sys.Storage)
+		}
+	}
+	return nil
 }
 
 func (b *buddySecretBackend) invalidate(_ context.Context, key string) {

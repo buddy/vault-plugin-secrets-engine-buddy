@@ -20,9 +20,9 @@ export VAULT_DEV_ROOT_TOKEN_ID="root"
 export VAULT_ADDR="http://127.0.0.1:8200"
 
 echo "Starting Vault"
-vault server -dev -log-level="debug" -config="$SCRATCH/vault.hcl" &
-sleep 2
+TF_LOG=DEBUG vault server -dev -log-level="debug" -config="$SCRATCH/vault.hcl" &
 VAULT_PID=$!
+sleep 2
 
 function cleanup {
   echo " Exiting..."
