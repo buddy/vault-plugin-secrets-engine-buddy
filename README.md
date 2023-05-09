@@ -39,7 +39,9 @@ Success! Data written to: buddy/config
 
 Additional options: 
 
-`token_ttl_in_days` - The TTL of the new rotated root token in days. Default: 30
+`token_auto_rotate` - Enable auto rotating of root token. The day before expiration there will be an attempt to rotate it. When error is encountered plugin will try every hour to rotate it until the token expires.
+
+`token_ttl_in_days` - The TTL of the new rotated root token in days. Default: 30. Min: 2
 
 `base_url` - The Buddy API base url. You may need to set this to your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
 
