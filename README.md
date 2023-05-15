@@ -38,16 +38,14 @@ Success! Data written to: buddy/config
 
 Available options:
 
-`token_auto_rotate` - enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
+- `token_auto_rotate` – enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
 > **Warning**
 > If no auto-rotation is set, the token should have no expiration date set in Buddy.
 
-`token_ttl_in_days` - the lease time of the rotated root token in days. Default: `30`. Min: `2`
-
-`base_url` - the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
-
-`insecure` - disables the SSL verification of the API calls. You may need to set this to `true` if you are using Buddy On-Premises without a signed certificate. Default: `false`
+- `token_ttl_in_days` – the lease time of the rotated root token in days. Default: `30`. Min: `2`
+- `base_url` – the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
+- `insecure` – disables the SSL verification of the API calls. You may need to set this to `true` if you are using Buddy On-Premises without a signed certificate. Default: `false`
 
 ### Rotating root token
 
@@ -75,15 +73,11 @@ Success! Data written to: buddy/roles/run_pipeline
 
 Available options:
 
-`ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
-
-`max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
-
-`scopes` – the list of scopes in the role, comma-separated.
-
-`ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
-
-`workspace_restrictions` – the list of workspace domains to which the token is restrictred, comma-separated.
+- `ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
+- `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
+- `scopes` – the list of scopes in the role, comma-separated.
+- `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
+- `workspace_restrictions` – the list of workspace domains to which the token is restrictred, comma-separated.
 
 ### Reading role credentials
 
