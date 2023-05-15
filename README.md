@@ -34,6 +34,7 @@ The short-lived tokens are created using the [personal access token](/docs/api/g
 $ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
+![Root token config](/root-token-config.png)
 
 Available options:
 
