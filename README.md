@@ -1,20 +1,18 @@
-# A [Vault](https://www.vaultproject.io) plugin for [Buddy](https://buddy.works).
+# The [HCP Vault](https://www.vaultproject.io) plugin for [Buddy](https://buddy.works).
 
 ## Build
 
-Pre-built binaries for Linux, macOS and Windows can be found at [the releases page](https://github.com/buddy/vault-plugin-secrets-buddy/releases).
+Pre-built binaries for Linux, macOS and Windows can be found in the [releases directory](https://github.com/buddy/vault-plugin-secrets-buddy/releases). For other platforms, there are currently no pre-built binaries available.
 
-For other platforms, there are not currently pre-built binaries available.
-
-To build, `git clone` this repository and run `make` from the project directory.
+To compile a new binary, clone this repository and run `make` from the project directory.
 
 ## Installation
 
-The Vault plugin system is documented on the [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
+The HCP Vault plugin system is documented on the Hashicorp's [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
 
-You will need to define a plugin directory using the `plugin_directory` configuration directive, then place the `vault-plugin-secrets-buddy` executable downloaded/generated above in the directory.
+To install the vault, define a plugin directory using the `plugin_directory` configuration directive and place the generate `vault-plugin-secrets-buddy` executable in that directory.
 
-Sample commands for registering and starting to use the plugin:
+Example commands for registering and starting the plugin:
 ```sh
 $ vault plugin register \
     -sha256=$(openssl sha256 < vault-plugin-secrets-buddy) \
@@ -28,9 +26,9 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ## Usage
 
-## Configuration
+### Configuration
 
-Setup root token that will create short-lived tokens. Root token must have scope `TOKEN_MANAGE`
+To generate short-lived tokens, you need to [create a personal access token](/docs/api/getting-started/oauth2/personal-access-token) (or root token) in Buddy. The root token must have the scope `TOKEN_MANAGE`
 
 ```sh
 $ vault write buddy/config token=ROOT_TOKEN
@@ -47,7 +45,7 @@ Additional options:
 
 `insecure` - Disable SSL verification of API calls. You may need to set this to `true` if you are using Buddy On-Premises without signed certificate. Default: false
 
-## Rotate root token
+### Rotating root token
 
 Attempt to rotate the root credentials used to communicate with Buddy. Old token will be removed
 
