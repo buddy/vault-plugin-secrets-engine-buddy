@@ -10,7 +10,7 @@ To compile a new binary, clone this repository and run `make` from the project d
 
 The HCP Vault plugin system is documented on the Hashicorp's [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
 
-To install the vault, define a plugin directory using the `plugin_directory` configuration directive and place the generate `vault-plugin-secrets-buddy` executable in that directory.
+To install the vault, define the plugin directory using the `plugin_directory` configuration directive and place the `vault-plugin-secrets-buddy` executable in that directory.
 
 Example commands for registering and starting the plugin:
 
@@ -27,7 +27,7 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ## Root token configuration
 
-To create short-lived tokens, you need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`.
+To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`.
 
 ```sh
 $ vault write buddy/config token=ROOT_TOKEN
@@ -40,7 +40,8 @@ Available options:
 
 `token_auto_rotate` - enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
-⚠️ If no auto-rotation is set, the token should have no expiration date set in Buddy.
+> **Warning**
+> If no auto-rotation is set, the token should have no expiration date set in Buddy.
 
 `token_ttl_in_days` - the lease time of the rotated root token in days. Default: `30`. Min: `2`
 
