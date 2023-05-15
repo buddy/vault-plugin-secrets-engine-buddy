@@ -28,16 +28,16 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ### Configuration
 
-To generate short-lived tokens, you need to [create a personal access token](/docs/api/getting-started/oauth2/personal-access-token) (or root token) in Buddy. The root token must have the scope `TOKEN_MANAGE`
+The short-lived tokens are created using the [personal access token](/docs/api/getting-started/oauth2/personal-access-token) (or root token) in Buddy. The root token must have the scope `TOKEN_MANAGE`.
 
 ```sh
 $ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
 
-Additional options: 
+Available options:
 
-`token_auto_rotate` - Enable auto rotating of root token. The day before expiration there will be an attempt to rotate it. When error is encountered plugin will try every hour to rotate it until the token expires.
+`token_auto_rotate` - enables auto-rotation of root token the day before the expiration. When error is encountered plugin will try every hour to rotate it until the token expires.
 
 `token_ttl_in_days` - The TTL of the new rotated root token in days. Default: 30. Min: 2
 
