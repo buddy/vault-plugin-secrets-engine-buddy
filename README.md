@@ -34,16 +34,14 @@ $ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
 
-<img src="/root-token-config.png" width="300">
-
-![Root token config](/root-token-config.png?raw=true)
+<img src="/root-token-config.png" width="450">
 
 Available options:
 
 - `token_auto_rotate` – enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
     > **Warning**
-    > If no auto-rotation is set, the token should not have an expiration date set in Buddy.
+    > If no auto-rotation is set, the token should not have an expiration date.
 
 - `token_ttl_in_days` – the lease time of the rotated root token in days. Default: `30`. Min: `2`
 - `base_url` – the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
@@ -73,6 +71,9 @@ $ vault write buddy/roles/run_pipeline \
 Success! Data written to: buddy/roles/run_pipeline   
 ```
 
+> **Note**
+> The full list of scopes is available in [Buddy documentation](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes).
+
 Available options:
 
 - `ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
@@ -86,16 +87,16 @@ Available options:
 To check the credentials in the role, run `read buddy/creds/ROLE_NAME`:
 
 ```sh
-$ vault read buddy/creds/r1
+$ vault read buddy/creds/run_pipeline
 Key                Value
 ---                -----
-lease_id           buddy/creds/r1/EUwKywNTUy7Msa6jWs3FR8Fq
+lease_id           buddy/creds/run_pipeline/EUwKywNTUy7Msa6jWs3FR8Fq
 lease_duration     30s
 lease_renewable    true
 token              5d225d46-c361-4b3f-ba84-9d83891313a0
 ```
 
-Generating environment variable from token:
+To save the token into an environment variable, run:
 
 ```sh
 TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
