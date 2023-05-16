@@ -27,27 +27,27 @@ func pathRole(b *buddySecretBackend) *framework.Path {
 		Fields: map[string]*framework.FieldSchema{
 			"name": {
 				Type:        framework.TypeLowerCaseString,
-				Description: "Name of the role",
+				Description: "The name of the role",
 			},
 			"ttl": {
 				Type:        framework.TypeDurationSecond,
-				Description: "Default lease for generated token. Vault will automatically revoke token after the duration. If not set or set to 0, will use system default.",
+				Description: "The default lease time for the generated vault token after which the token is automatically revoked. If not set or set to 0, system default is used.",
 			},
 			"max_ttl": {
 				Type:        framework.TypeDurationSecond,
-				Description: "Maximum duration that generated token cab be extended to. If not set or set to 0, will use system default.",
+				Description: "The maximum time the generated token can be extended to before it eventually expires. If not set or set to 0, system default is used.",
 			},
 			"scopes": {
 				Type:        framework.TypeCommaStringSlice,
-				Description: "The comma separated list of scopes",
+				Description: "The list of scopes in the role, comma-separated.",
 			},
 			"ip_restrictions": {
 				Type:        framework.TypeCommaStringSlice,
-				Description: "The comma separated list of IP addresses",
+				Description: "The list of IP addresses to which the token is restricted, comma-separated.",
 			},
 			"workspace_restrictions": {
 				Type:        framework.TypeCommaStringSlice,
-				Description: "The comma separated list of workspace domains",
+				Description: "The list of workspace domains to which the token is restrictred, comma-separated.",
 			},
 		},
 		Operations: map[logical.Operation]framework.OperationHandler{
