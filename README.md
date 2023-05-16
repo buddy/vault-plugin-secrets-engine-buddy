@@ -33,6 +33,9 @@ To create short-lived tokens, you first need to configure a [root token in Buddy
 
 <img src="/root-token-config.png" width="450">
 
+>**Note**
+> You can further fortify your tokens by allowing access from selected IP's and/or workspace domains.
+
 ### Saving to vault
 
 Once generated, copy the value of the token and save it to the vault:
@@ -83,7 +86,7 @@ Available options:
 - `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
 - `scopes` – the [list of scopes](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes) in the role, comma-separated.
 - `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
-- `workspace_restrictions` – the list of workspace domains to which the token is restrictred, comma-separated.
+- `workspace_restrictions` – the list of workspace domains to which the token is restricted, comma-separated.
 
 ### Reading role credentials
 
