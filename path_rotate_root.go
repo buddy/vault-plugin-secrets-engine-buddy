@@ -71,8 +71,8 @@ func (b *buddySecretBackend) pathRotateRoot(ctx context.Context, req *logical.Re
 const rotateHelpSyn = "Attempt to rotate the root credentials used to communicate with Buddy"
 
 const rotateHelpDesc = `
-This path will attempt to generate new root token for the user.
-The new token will have the sames scopers and filters as the old one
+This path will attempt to generate a new root token for the user.
+The new token will have the sames scopes and filters as the old one.
 The old token will be removed if possible.
-The new token won't be returned from this endpoint, nor the read config
+The new token will not be returned from this endpoint or by reading the config.
 `
