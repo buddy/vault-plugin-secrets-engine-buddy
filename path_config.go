@@ -40,23 +40,23 @@ func pathConfig(b *buddySecretBackend) *framework.Path {
 		Fields: map[string]*framework.FieldSchema{
 			"token": {
 				Type:        framework.TypeString,
-				Description: "The Personal Access Token. Must have scope `TOKEN_MANAGE`. Required",
+				Description: "The Personal Access Token (root token) generated in Buddy. Must have the scope `TOKEN_MANAGE`. Required",
 			},
 			"token_ttl_in_days": {
 				Type:        framework.TypeInt,
-				Description: fmt.Sprintf("The TTL of the new rotated root token in days. Default: %d. Min: %d", defaultRootTokenTTL, minRootTokenTTL),
+				Description: fmt.Sprintf("The TTL of the newly rotated root token in days. Default: %d. Min: %d", defaultRootTokenTTL, minRootTokenTTL),
 			},
 			"token_auto_rotate": {
 				Type:        framework.TypeBool,
-				Description: "Enable auto rotating of root token. The day before expiration there will be an attempt to rotate it. When error is encountered plugin will try every hour to rotate it until the token expires.",
+				Description: "Enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.",
 			},
 			"base_url": {
 				Type:        framework.TypeString,
-				Description: fmt.Sprintf("The Buddy API base url. You may need to set this to your Buddy On-Premises API endpoint. Default: `%s`", defaultBaseUrl),
+				Description: fmt.Sprintf("The Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `%s`", defaultBaseUrl),
 			},
 			"insecure": {
 				Type:        framework.TypeBool,
-				Description: "Disable SSL verification of API calls. You may need to set this to `true` if you are using Buddy On-Premises without signed certificate. Default: false",
+				Description: "Disables the SSL verification of the API calls. You may need to set this to true if you are using Buddy On-Premises without a signed certificate. Default: false",
 			},
 		},
 		Operations: map[logical.Operation]framework.OperationHandler{
@@ -142,7 +142,7 @@ func (b *buddySecretBackend) pathConfigWrite(ctx context.Context, req *logical.R
 		if expiresAtErr == nil && expiresAt.Unix() < rotateAt.Unix() {
 			rotateAt = time.Date(expiresAt.Year(), expiresAt.Month(), expiresAt.Day()-1, expiresAt.Hour(), expiresAt.Minute(), expiresAt.Second(), expiresAt.Nanosecond(), expiresAt.Location())
 			if rotateAt.Unix() < minExpirationDate.Unix() {
-				return logical.ErrorResponse("token expiration date must be after %s, insted it expires at: %s", minExpirationDate.Format(time.RFC3339), expiresAt.Format(time.RFC3339)), nil
+				return logical.ErrorResponse("token expiration date must be set after %s, instead it expires at: %s", minExpirationDate.Format(time.RFC3339), expiresAt.Format(time.RFC3339)), nil
 			}
 		}
 		config.TokenAutoRotateAt = rotateAt
@@ -241,6 +241,6 @@ func (b *buddySecretBackend) saveConfig(ctx context.Context, config *buddyConfig
 const confHelpSyn = "Configure the Buddy Secret backend"
 const confHelpDesc = `
 The Buddy secret backend requires credentials for managing Personal
-Access Tokens. This endpoint is used to configure those credentials
-as well as default values for the backend in general
+Access Tokens (root tokens). This endpoint is used to configure those credentials
+as well as the default values for the backend in general.
 `
