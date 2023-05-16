@@ -41,7 +41,7 @@ To create short-lived tokens, you first need to configure a [root token in Buddy
 Once generated, copy the value of the token and save it to the vault:
 
 ```sh
-$ write buddy/config token=ROOT_TOKEN
+$ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
 
