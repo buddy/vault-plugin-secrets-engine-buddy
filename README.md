@@ -34,14 +34,16 @@ $ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
 
+<img src="/root-token-config.png" width="300">
+
 ![Root token config](/root-token-config.png?raw=true)
 
 Available options:
 
 - `token_auto_rotate` – enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
-> **Warning**
-> If no auto-rotation is set, the token should have no expiration date set in Buddy.
+    > **Warning**
+    > If no auto-rotation is set, the token should not have an expiration date set in Buddy.
 
 - `token_ttl_in_days` – the lease time of the rotated root token in days. Default: `30`. Min: `2`
 - `base_url` – the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
@@ -49,7 +51,7 @@ Available options:
 
 ### Rotating root token
 
-Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one and creates new. To rotate the root token, run `vault write -f buddy/rotate-root`.
+Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one and creates new. To rotate the token, run `vault write -f buddy/rotate-root`.
 
 ```sh
 $ vault write -f buddy/rotate-root
@@ -58,9 +60,9 @@ Success! Data written to: buddy/rotate-root
 
 ## Vault token configuration
 
-### Creating role
+### Creating role token
 
-To create a token with the role, run `vault write buddy/roles/ROLE_NAME` and add the lease time and scopes.
+To create a token with roles, run `vault write buddy/roles/ROLE_NAME` and add the lease time and scopes.
 
 Example command for creating a token with the RUN_PIPELINE role:
 
