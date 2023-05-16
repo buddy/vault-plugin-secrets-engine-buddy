@@ -5,7 +5,7 @@ BUDDY_GET_TOKEN?=curl
 BUDDY_BASE_URL?=
 BUDDY_INSECURE?=false
 
-# bin generates the releaseable binaries for this plugin
+# bin generates releaseable binaries for this plugin
 build: fmtcheck generate
 	@CGO_ENABLED=0 BUILD_TAGS='$(BUILD_TAGS)' sh -c "'$(CURDIR)/scripts/build.sh'"
 
