@@ -241,6 +241,6 @@ func (b *buddySecretBackend) saveConfig(ctx context.Context, config *buddyConfig
 const confHelpSyn = "Configure the Buddy Secret backend"
 const confHelpDesc = `
 The Buddy secret backend requires credentials for managing Personal
-Access Tokens (root tokens). This endpoint is used to configure those credentials
-as well as the default values for the backend in general.
+Access Tokens). This endpoint is used to configure those credentials,
+ as well as the default values for the backend in general.
 `
