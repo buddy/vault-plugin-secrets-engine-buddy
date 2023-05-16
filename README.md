@@ -47,7 +47,7 @@ Available options:
 - `token_auto_rotate` – enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
     > **Warning**
-    > If no auto-rotation is set, the token should not have an expiration date.
+    > If no auto-rotation is set, the token should be generated with no expiration date.
 
 - `token_ttl_in_days` – the lease time of the rotated root token in days. Default: `30`. Min: `2`
 - `base_url` – the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
@@ -55,7 +55,7 @@ Available options:
 
 ### Rotating root token
 
-Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one and creates new. To rotate the token, run `vault write -f buddy/rotate-root`.
+Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one. To rotate the token, run `vault write -f buddy/rotate-root`.
 
 ```sh
 $ vault write -f buddy/rotate-root
@@ -77,14 +77,11 @@ $ vault write buddy/roles/run_pipeline \
 Success! Data written to: buddy/roles/run_pipeline   
 ```
 
-> **Note**
-> The full list of scopes is available in [Buddy documentation](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes).
-
 Available options:
 
 - `ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
 - `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
-- `scopes` – the list of scopes in the role, comma-separated.
+- `scopes` – the list of scopes in the role, comma-separated. The full list of scopes is available in [Buddy documentation](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes)
 - `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
 - `workspace_restrictions` – the list of workspace domains to which the token is restrictred, comma-separated.
 
