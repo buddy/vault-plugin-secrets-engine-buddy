@@ -81,7 +81,7 @@ Available options:
 
 - `ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
 - `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
-- `scopes` – the [list of scopes in the role](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes), comma-separated.
+- `scopes` – the [list of scopes](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes) in the role, comma-separated.
 - `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
 - `workspace_restrictions` – the list of workspace domains to which the token is restrictred, comma-separated.
 
