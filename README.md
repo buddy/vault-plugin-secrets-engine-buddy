@@ -27,9 +27,13 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ## Root token configuration
 
+### Generating token
+
 To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`:
 
 <img src="/root-token-config.png" width="450">
+
+### Saving to vault
 
 Once generated, copy the value of the token and save it to the vault:
 
@@ -62,7 +66,7 @@ Success! Data written to: buddy/rotate-root
 
 ### Creating role token
 
-To create a token with roles, run `vault write buddy/roles/ROLE_NAME` and add the lease time and scopes.
+To create a token with roles, run `vault write buddy/roles/ROLE_NAME` with the lease time and scopes.
 
 Example command for creating a token with the RUN_PIPELINE role:
 
@@ -98,10 +102,24 @@ lease_renewable    true
 token              5d225d46-c361-4b3f-ba84-9d83891313a0
 ```
 
+### Renew/Revoke
+
+To renew the token, run
+```sh
+$ vault lease renew $lease_id
+```
+
+To revoke the token, run
+```sh
+$ vault lease revoke $lease_id
+```
+
+### Saving into variable
+
 To save the token into an environment variable, run:
 
 ```sh
-TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
+$ TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
 ```
 
 
