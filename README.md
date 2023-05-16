@@ -34,7 +34,7 @@ To create short-lived tokens, you first need to configure a [root token in Buddy
 <img src="/root-token-config.png" width="450">
 
 >**Note**
-> You can further fortify your tokens by allowing access from selected IP's and/or workspace domains.
+> You can fortify your tokens by allowing access from selected IP's and/or workspace domains.
 
 ### Saving to vault
 
