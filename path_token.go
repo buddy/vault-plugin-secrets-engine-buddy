@@ -112,6 +112,6 @@ func pathToken(b *buddySecretBackend) *framework.Path {
 
 const tokenHelpSyn = "Request Personal Access Token for the given Vault role."
 const tokenHelpDesc = `
-This path creates or updates the dynamic Personal Access Token (root token).
+This path creates or updates the dynamic Personal Access Token.
 It will be automatically deleted when the lease time has expired.
 `
