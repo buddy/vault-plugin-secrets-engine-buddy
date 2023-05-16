@@ -44,7 +44,7 @@ func pathConfig(b *buddySecretBackend) *framework.Path {
 			},
 			"token_ttl_in_days": {
 				Type:        framework.TypeInt,
-				Description: fmt.Sprintf("The TTL of the newly rotated root token in days. Default: %d. Min: %d", defaultRootTokenTTL, minRootTokenTTL),
+				Description: fmt.Sprintf("The lease time of the rotated root token in days. Default: %d. Min: %d", defaultRootTokenTTL, minRootTokenTTL),
 			},
 			"token_auto_rotate": {
 				Type:        framework.TypeBool,
