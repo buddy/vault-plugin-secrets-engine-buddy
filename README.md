@@ -27,14 +27,16 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ## Root token configuration
 
-To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`.
-
-```sh
-$ vault write buddy/config token=ROOT_TOKEN
-Success! Data written to: buddy/config
-```
+To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`:
 
 <img src="/root-token-config.png" width="450">
+
+Once generated, copy the value of the token and save it to the vault:
+
+```sh
+$ write buddy/config token=ROOT_TOKEN
+Success! Data written to: buddy/config
+```
 
 Available options:
 
