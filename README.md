@@ -58,7 +58,7 @@ Available options:
 
 ### Rotating root token
 
-Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one. To rotate the token, run `vault write -f buddy/rotate-root`.
+Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one. To rotate the token, run
 
 ```sh
 $ vault write -f buddy/rotate-root
@@ -67,11 +67,11 @@ Success! Data written to: buddy/rotate-root
 
 ## Vault token configuration
 
-### Creating role token
+### Creating token role
 
-To create a token with roles, run `vault write buddy/roles/ROLE_NAME` with the lease time and scopes.
+To create a role for the token, run `vault write buddy/roles/ROLE_NAME` with the lease time and scopes.
 
-Example command for creating a token with the RUN_PIPELINE role:
+Example command for creating the RUN_PIPELINE role:
 
 ```sh
 $ vault write buddy/roles/run_pipeline \
@@ -82,7 +82,7 @@ Success! Data written to: buddy/roles/run_pipeline
 
 Available options:
 
-- `ttl` – the default lease time for the generated vault token after which the token is automatically revoked. If not set or set to `0`, system default is used.
+- `ttl` – the default lease time for the generated token after which the token is automatically revoked. If not set or set to `0`, system default is used.
 - `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
 - `scopes` – the [list of scopes](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes) in the role, comma-separated.
 - `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
@@ -90,7 +90,7 @@ Available options:
 
 ### Reading role credentials
 
-To check the credentials in the role, run `read buddy/creds/ROLE_NAME`:
+To check the credentials in the role, run `vault read buddy/creds/ROLE_NAME`:
 
 ```sh
 $ vault read buddy/creds/run_pipeline
@@ -116,7 +116,7 @@ $ vault lease revoke $lease_id
 
 ### Saving into variable
 
-To save the token into an environment variable, run:
+To save the token into an environment variable, run
 
 ```sh
 $ TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)

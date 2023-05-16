@@ -87,7 +87,7 @@ function buddy_test_config {
   api_create_token "$BUDDY_TOKEN" '{ "name": "test2", "expires_in": 2, "scopes": ["TOKEN_MANAGE"] }'
   t2=$(echo "$BUDDY_FETCH_TOKEN" | jq -r '.token')
   res=$(vault_cmd write buddy/config token="$t2" token_auto_rotate=true base_url=$BUDDY_BASE_URL insecure=$BUDDY_INSECURE 2>&1 || true)
-  test_contains "$res" "token expiration date must be after" "Configuration must validate token expiration date"
+  test_contains "$res" "token expiration date must be set after" "Configuration must validate token expiration date"
   # read valid config
   api_create_token "$BUDDY_TOKEN" '{ "name": "test3", "expires_in": 10, "scopes": ["TOKEN_MANAGE"] }'
   t3=$(echo "$BUDDY_FETCH_TOKEN" | jq -r '.token')
