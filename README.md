@@ -37,7 +37,7 @@ To create short-lived tokens, you first need to configure a [root token in Buddy
 > You can fortify your tokens by allowing access from selected IP's and/or workspace domains.  
 
 > **Warning**
-> It is not possible to set `ip_restrictions` and `workspace_restrictions` in the vault token if they are already defined in the root token.
+> It is not possible to set `ip_restrictions` and `workspace_restrictions` in the vault token if they are already defined in the root token – the restrictions are automatically inherited from root to child tokens.
 
 ### Saving to vault
 
@@ -88,8 +88,8 @@ Available options:
 - `ttl` – the default lease time for the generated token after which the token is automatically revoked. If not set or set to `0`, system default is used.
 - `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
 - `scopes` – the [list of scopes](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes) in the role, comma-separated.
-- `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated. Leave blank if already defined in the root token.
-- `workspace_restrictions` – the list of workspace domains to which the token is restricted, comma-separated. Leave blank if already defined in the root token.
+- `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated. Leave blank if already defined in the root token (the restrictions are automatically inherited).
+- `workspace_restrictions` – the list of workspace domains to which the token is restricted, comma-separated. Leave blank if already defined in the root token (the restrictions are automatically inherited).
 
 ### Generating role credentials
 
