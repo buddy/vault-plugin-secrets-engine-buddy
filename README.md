@@ -88,9 +88,9 @@ Available options:
 - `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
 - `workspace_restrictions` – the list of workspace domains to which the token is restricted, comma-separated.
 
-### Reading role credentials
+### Generating role credentials
 
-To check the credentials in the role, run `vault read buddy/creds/ROLE_NAME`:
+To generate new credentials, run `vault read buddy/creds/ROLE_NAME`:
 
 ```sh
 $ vault read buddy/creds/run_pipeline
@@ -102,9 +102,9 @@ lease_renewable    true
 token              5d225d46-c361-4b3f-ba84-9d83891313a0
 ```
 
-### Renew/Revoke
+### Extend/Revoke
 
-To renew the token, run
+To extend the lease time of the token, run
 ```sh
 $ vault lease renew $lease_id
 ```
