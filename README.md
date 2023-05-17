@@ -1,20 +1,19 @@
-# A [Vault](https://www.vaultproject.io) plugin for [Buddy](https://buddy.works).
+# The [HCP Vault](https://www.vaultproject.io) plugin for [Buddy](https://buddy.works).
 
-## Build
+## Binaries
 
-Pre-built binaries for Linux, macOS and Windows can be found at [the releases page](https://github.com/buddy/vault-plugin-secrets-buddy/releases).
+Pre-built binaries for Linux, macOS and Windows can be found in the [releases directory](https://github.com/buddy/vault-plugin-secrets-buddy/releases). For other platforms, there are currently no pre-built binaries available.
 
-For other platforms, there are not currently pre-built binaries available.
+To compile a new binary, clone this repository and run `make` from the project directory.
 
-To build, `git clone` this repository and run `make` from the project directory.
+## Vault installation
 
-## Installation
+The HCP Vault plugin system is documented on the Hashicorp's [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
 
-The Vault plugin system is documented on the [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
+To install the vault, define the plugin directory using the `plugin_directory` configuration directive and place the `vault-plugin-secrets-buddy` executable in that directory.
 
-You will need to define a plugin directory using the `plugin_directory` configuration directive, then place the `vault-plugin-secrets-buddy` executable downloaded/generated above in the directory.
+Example commands for registering and starting the plugin:
 
-Sample commands for registering and starting to use the plugin:
 ```sh
 $ vault plugin register \
     -sha256=$(openssl sha256 < vault-plugin-secrets-buddy) \
@@ -26,75 +25,101 @@ $ vault secrets enable buddy
 Success! Enabled the buddy secrets engine at: buddy/
 ```
 
-## Usage
+## Root token configuration
 
-## Configuration
+### Generating token
 
-Setup root token that will create short-lived tokens. Root token must have scope `TOKEN_MANAGE`
+To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`:
+
+<img src="/root-token-config.png" width="450">
+
+>**Note**
+> You can fortify your tokens by allowing access from selected IP's and/or workspace domains.
+
+### Saving to vault
+
+Once generated, copy the value of the token and save it to the vault:
 
 ```sh
 $ vault write buddy/config token=ROOT_TOKEN
 Success! Data written to: buddy/config
 ```
 
-Additional options: 
+Available options:
 
-`token_auto_rotate` - Enable auto rotating of root token. The day before expiration there will be an attempt to rotate it. When error is encountered plugin will try every hour to rotate it until the token expires.
+- `token_auto_rotate` – enables auto-rotation of the root token one day before the expiration date. If an error is encountered, the plugin will reattempt to rotate the token on every hour until it eventually expires.
 
-`token_ttl_in_days` - The TTL of the new rotated root token in days. Default: 30. Min: 2
+    > **Warning**
+    > If no auto-rotation is set, the token should be generated with no expiration date.
 
-`base_url` - The Buddy API base url. You may need to set this to your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
+- `token_ttl_in_days` – the lease time of the rotated root token in days. Default: `30`. Min: `2`
+- `base_url` – the Buddy API base URL. You may need to set this in your Buddy On-Premises API endpoint. Default: `https://api.buddy.works`
+- `insecure` – disables the SSL verification of the API calls. You may need to set this to `true` if you are using Buddy On-Premises without a signed certificate. Default: `false`
 
-`insecure` - Disable SSL verification of API calls. You may need to set this to `true` if you are using Buddy On-Premises without signed certificate. Default: false
+### Rotating root token
 
-## Rotate root token
-
-Attempt to rotate the root credentials used to communicate with Buddy. Old token will be removed
+Updates the root credentials used for communication with Buddy. Rotating the root token removes the old one. To rotate the token, run
 
 ```sh
 $ vault write -f buddy/rotate-root
 Success! Data written to: buddy/rotate-root
 ```
 
-## Roles
+## Vault token configuration
 
-Create a role and read its current credentials:
+### Creating token role
+
+To create a role for the token, run `vault write buddy/roles/ROLE_NAME` with the lease time and scopes.
+
+Example command for creating the RUN_PIPELINE role:
 
 ```sh
-$ vault write buddy/roles/r1 \
+$ vault write buddy/roles/run_pipeline \
     ttl=30 \
     scopes=WORKSPACE,EXECUTION_RUN
-Success! Data written to: buddy/roles/r1    
+Success! Data written to: buddy/roles/run_pipeline   
 ```
 
-All options:
+Available options:
 
-`ttl` - Default lease for generated token. Vault will automatically revoke token after the duration. If not set or set to 0, will use system default.
+- `ttl` – the default lease time for the generated token after which the token is automatically revoked. If not set or set to `0`, system default is used.
+- `max_ttl` – the maximum time the generated token can be extended to before it eventually expires. If not set or set to `0`, system default is used.
+- `scopes` – the [list of scopes](https://buddy.works/docs/api/getting-started/oauth2/introduction#supported-scopes) in the role, comma-separated.
+- `ip_restrictions` – the list of IP addresses to which the token is restricted, comma-separated.
+- `workspace_restrictions` – the list of workspace domains to which the token is restricted, comma-separated.
 
-`max_ttl` - Maximum duration that generated token cab be extended to. If not set or set to 0, will use system default.
+### Generating role credentials
 
-`scopes` - The comma separated list of scopes
-
-`ip_restrictions` - The comma separated list of IP addresses
-
-`workspace_restrictions` - The comma separated list of workspace domains
-
-Read the credentials:
+To generate new credentials, run `vault read buddy/creds/ROLE_NAME`:
 
 ```sh
-$ vault read buddy/creds/r1
+$ vault read buddy/creds/run_pipeline
 Key                Value
 ---                -----
-lease_id           buddy/creds/r1/EUwKywNTUy7Msa6jWs3FR8Fq
+lease_id           buddy/creds/run_pipeline/EUwKywNTUy7Msa6jWs3FR8Fq
 lease_duration     30s
 lease_renewable    true
 token              5d225d46-c361-4b3f-ba84-9d83891313a0
 ```
 
-Grab token into env variable:
+### Extend/Revoke
+
+To extend the lease time of the token, run
+```sh
+$ vault lease renew $lease_id
+```
+
+To revoke the token, run
+```sh
+$ vault lease revoke $lease_id
+```
+
+### Saving into variable
+
+To save the token into an environment variable, run
 
 ```sh
-TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
+$ TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
 ```
 
 

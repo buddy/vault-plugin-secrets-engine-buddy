@@ -139,10 +139,10 @@ func Factory(ctx context.Context, conf *logical.BackendConfig) (logical.Backend,
 }
 
 const backendHelp = `
-The Buddy secrets engine dynamically generates short time lived
-personal access tokens based on predefined scopes and filters.
+The Buddy secrets engine dynamically generates short-lived
+Personal Access Tokens based on predefined scopes and filters.
 
-After mounting this secrets engine, credentials to manage Buddy tokens
-must be configured with the "config/" endpoints. You can generate tokens
-using the "tokens/" endpoints.  
+After mounting the secrets engine, the credentials required to manage
+Buddy tokens must be configured with the "config/" endpoints.
+You can the generate the tokens using the "tokens/" endpoints.  
 `

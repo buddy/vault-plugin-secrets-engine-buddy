@@ -32,7 +32,7 @@ function cleanup {
 }
 trap cleanup EXIT
 
-echo "Login in Vault"
+echo "Logging into Vault"
 vault login root &>/dev/null
 
 echo "Building"

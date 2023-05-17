@@ -2,13 +2,13 @@
 
 TOOL=vault-plugin-secrets-buddy
 
-# This script builds the application from source for a platform.
+# This script builds the application from the source for the provided platform.
 
 set -e
 
 GO_CMD=${GO_CMD:-go}
 
-# Get the parent directory of where this script is.
+# Get the parent directory of the script location.
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )/.." && pwd )"
@@ -16,10 +16,10 @@ DIR="$( cd -P "$( dirname "$SOURCE" )/.." && pwd )"
 # Change into that directory
 cd "$DIR"
 
-# Set build tags
+# Set the build tags
 BUILD_TAGS="${BUILD_TAGS}:-${TOOL}"
 
-# Get the git commit
+# Get the commit
 GIT_COMMIT="$(git rev-parse HEAD)"
 GIT_DIRTY="$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
 
@@ -30,7 +30,7 @@ case $(uname) in
         ;;
 esac
 
-# Delete the old dir
+# Delete the old directory
 echo "Removing old directory..."
 rm -f bin/*
 rm -rf pkg/*
@@ -45,7 +45,7 @@ ${GO_CMD} build \
     -tags "${BUILD_TAGS}" \
     "${DIR}/cmd/${TOOL}"
 
-# Move all the compiled things to the $GOPATH/bin
+# Move all compiled things to the $GOPATH/bin
 OLDIFS=$IFS
 IFS=: MAIN_GOPATH=($GOPATH)
 IFS=$OLDIFS

@@ -95,7 +95,7 @@ func pathToken(b *buddySecretBackend) *framework.Path {
 		Fields: map[string]*framework.FieldSchema{
 			"role": {
 				Type:        framework.TypeLowerCaseString,
-				Description: "Name of the Vault role",
+				Description: "The name of the Vault role",
 			},
 		},
 		Operations: map[logical.Operation]framework.OperationHandler{
@@ -110,8 +110,8 @@ func pathToken(b *buddySecretBackend) *framework.Path {
 	}
 }
 
-const tokenHelpSyn = "Requet Personal Access Token for a given Vault role."
+const tokenHelpSyn = "Request Personal Access Token for the given Vault role."
 const tokenHelpDesc = `
-This path creates or updates dynamic Personal Access Token.
-It will be automatically deleted whe the lease has expired.
+This path creates or updates the dynamic Personal Access Token.
+It will be automatically deleted when the lease time has expired.
 `
