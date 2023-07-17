@@ -122,5 +122,5 @@ $ vault lease revoke $lease_id
 To save the token into an environment variable, run
 
 ```sh
-$ TOKEN=$(vault read -format=json buddy/creds/r1 | jq -r .data.token)
+$ TOKEN=$(vault read -format=json buddy/creds/run_pipeline | jq -r .data.token)
 ```
