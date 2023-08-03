@@ -1,8 +1,8 @@
-project_name: vault-plugin-secrets-buddy
+project_name: vault-plugin-secrets-engine-buddy
 builds:
   - env:
       - CGO_ENABLED=0
-    main: ./cmd/vault-plugin-secrets-buddy/main.go
+    main: ./cmd/vault-plugin-secrets-engine-buddy/main.go
     mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
       - -trimpath
@@ -38,6 +38,6 @@ signs:
 release:
   github:
     owner: buddy
-    name: vault-plugin-secrets-buddy
+    name: vault-plugin-secrets-engine-buddy
 changelog:
   skip: true

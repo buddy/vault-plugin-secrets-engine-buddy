@@ -3,7 +3,7 @@
 set -e
 
 MNT_PATH="buddy"
-PLUGIN_NAME="vault-plugin-secrets-buddy"
+PLUGIN_NAME="vault-plugin-secrets-engine-buddy"
 
 DIR="$(cd "$(dirname "$(readlink "$0")")" && pwd)"
 

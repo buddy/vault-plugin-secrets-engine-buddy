@@ -1,7 +1,7 @@
 package main
 
 import (
-	buddysecrets "github.com/buddy/vault-plugin-secrets-buddy"
+	buddysecrets "github.com/buddy/vault-plugin-secrets-engine-buddy"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
 	"log"

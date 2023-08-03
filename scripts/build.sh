@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TOOL=vault-plugin-secrets-buddy
+TOOL=vault-plugin-secrets-engine-buddy
 
 # This script builds the application from the source for the provided platform.
 
