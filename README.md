@@ -29,7 +29,7 @@ Success! Enabled the buddy secrets engine at: buddy/
 
 ### Generating token
 
-To create short-lived tokens, you first need to configure a [root token in Buddy](/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`:
+To create short-lived tokens, you first need to configure a [root token in Buddy](https://buddy.works/docs/api/getting-started/oauth2/personal-access-token). The root token must have the scope `TOKEN_MANAGE`:
 
 <img src="/root-token-config.png" width="450">
 
