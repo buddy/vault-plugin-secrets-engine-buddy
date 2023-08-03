@@ -1,4 +1,4 @@
-TOOL?=vault-plugin-secrets-buddy
+TOOL?=vault-plugin-secrets-engine-buddy
 BUILD_TAGS?=${TOOL}
 GOFMT_FILES?=$$(find . -name '*.go' | grep -v vendor)
 BUDDY_GET_TOKEN?=curl

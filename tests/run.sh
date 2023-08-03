@@ -3,7 +3,7 @@
 set -e
 
 VAULT_IMAGE=vault:1.13.2
-PLUGIN_NAME="vault-plugin-secrets-buddy"
+PLUGIN_NAME="vault-plugin-secrets-engine-buddy"
 MNT_PATH="buddy"
 DIR="$(cd "$(dirname "$(readlink "$0")")" && pwd)"
 PLUGINS="$DIR/tmp/plugins"

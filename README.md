@@ -2,7 +2,7 @@
 
 ## Binaries
 
-Pre-built binaries for Linux, macOS and Windows can be found in the [releases directory](https://github.com/buddy/vault-plugin-secrets-buddy/releases). For other platforms, there are currently no pre-built binaries available.
+Pre-built binaries for Linux, macOS and Windows can be found in the [releases directory](https://github.com/buddy/vault-plugin-secrets-engine-buddy/releases). For other platforms, there are currently no pre-built binaries available.
 
 To compile a new binary, clone this repository and run `make` from the project directory.
 
@@ -10,14 +10,14 @@ To compile a new binary, clone this repository and run `make` from the project d
 
 The HashiCorp Vault plugin system is documented on the HashiCorp's [Vault documentation site](https://www.vaultproject.io/docs/internals/plugins.html).
 
-To install the vault, define the plugin directory using the `plugin_directory` configuration directive and place the `vault-plugin-secrets-buddy` executable in that directory.
+To install the vault, define the plugin directory using the `plugin_directory` configuration directive and place the `vault-plugin-secrets-engine-buddy` executable in that directory.
 
 Example commands for registering and starting the plugin:
 
 ```sh
 $ vault plugin register \
-    -sha256=$(openssl sha256 < vault-plugin-secrets-buddy) \
-    -command="vault-plugin-secrets-buddy" \
+    -sha256=$(openssl sha256 < vault-plugin-secrets-engine-buddy) \
+    -command="vault-plugin-secrets-engine-buddy" \
     secret buddy
 Success! Registered plugin: buddy
 

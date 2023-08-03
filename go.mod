@@ -1,4 +1,4 @@
-module github.com/buddy/vault-plugin-secrets-buddy
+module github.com/buddy/vault-plugin-secrets-engine-buddy
 
 go 1.19
 
