@@ -24,7 +24,16 @@ function vault_server_up {
     --detach \
     $VAULT_IMAGE \
     server -dev >/dev/null
-  sleep 2
+  echo "Waiting for Vault to be ready..."
+  for i in {1..30}; do
+    if curl -s http://127.0.0.1:8200/v1/sys/health >/dev/null 2>&1; then
+      echo "Vault is ready"
+      return
+    fi
+    sleep 1
+  done
+  echo "Vault failed to start"
+  exit 1
 }
 
 function build_cmd {
